@@ -2,7 +2,7 @@ formatter: "markdown"
 
 output:
   file: "README.md"
-  mode: replace
+  mode: inject
 
 settings:
   color: false
