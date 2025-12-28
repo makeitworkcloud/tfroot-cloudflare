@@ -64,11 +64,7 @@ resource "cloudflare_zone_setting" "polish" {
   value      = "off"
 }
 
-resource "cloudflare_zone_setting" "prefetch_preload" {
-  zone_id    = local.zone_id
-  setting_id = "prefetch_preload"
-  value      = "on"
-}
+# Note: prefetch_preload requires Cloudflare Pro plan or higher
 
 # Cache rule for static HTML at root domain
 resource "cloudflare_ruleset" "cache_rules" {
