@@ -34,8 +34,66 @@ resource "cloudflare_zone_setting" "minify" {
   zone_id    = local.zone_id
   setting_id = "minify"
   value = {
-    css  = "off"
-    html = "off"
+    css  = "on"
+    html = "on"
     js   = "off"
   }
+}
+
+resource "cloudflare_zone_setting" "brotli" {
+  zone_id    = local.zone_id
+  setting_id = "brotli"
+  value      = "on"
+}
+
+resource "cloudflare_zone_setting" "early_hints" {
+  zone_id    = local.zone_id
+  setting_id = "early_hints"
+  value      = "on"
+}
+
+resource "cloudflare_zone_setting" "rocket_loader" {
+  zone_id    = local.zone_id
+  setting_id = "rocket_loader"
+  value      = "off"
+}
+
+resource "cloudflare_zone_setting" "polish" {
+  zone_id    = local.zone_id
+  setting_id = "polish"
+  value      = "off"
+}
+
+resource "cloudflare_zone_setting" "prefetch_preload" {
+  zone_id    = local.zone_id
+  setting_id = "prefetch_preload"
+  value      = "on"
+}
+
+# Cache rule for static HTML at root domain
+resource "cloudflare_ruleset" "cache_rules" {
+  zone_id     = local.zone_id
+  name        = "Cache Rules"
+  description = "Cache static HTML content"
+  kind        = "zone"
+  phase       = "http_request_cache_settings"
+
+  rules = [
+    {
+      action = "set_cache_settings"
+      action_parameters = {
+        cache = true
+        edge_ttl = {
+          mode    = "override_origin"
+          default = 3600 # 1 hour edge cache
+        }
+        browser_ttl = {
+          mode = "respect_origin"
+        }
+      }
+      expression  = "((http.host eq \"makeitwork.cloud\") or (http.host eq \"www.makeitwork.cloud\")) and ((http.request.uri.path eq \"/\") or (ends_with(http.request.uri.path, \".html\")))"
+      description = "Cache root and HTML pages for 1 hour at edge"
+      enabled     = true
+    }
+  ]
 }
