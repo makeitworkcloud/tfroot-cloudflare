@@ -10,15 +10,6 @@ resource "cloudflare_zero_trust_organization" "main" {
   is_ui_read_only             = false
 }
 
-# Email OTP identity provider (existing, imported)
-resource "cloudflare_zero_trust_access_identity_provider" "email_otp" {
-  account_id = local.account_id
-  name       = "Email OTP"
-  type       = "onetimepin"
-
-  config = {}
-}
-
 # GitHub identity provider for WARP enrollment
 resource "cloudflare_zero_trust_access_identity_provider" "github" {
   account_id = local.account_id
@@ -52,13 +43,12 @@ resource "cloudflare_zero_trust_access_application" "warp" {
   type             = "warp"
   session_duration = "24h"
 
-  # Allow all configured identity providers
+  # Only GitHub SSO allowed for WARP enrollment
   allowed_idps = [
-    cloudflare_zero_trust_access_identity_provider.email_otp.id,
     cloudflare_zero_trust_access_identity_provider.github.id,
   ]
 
-  # Policies managed by Terraform (will replace existing manual policies)
+  # Policies managed by Terraform
   policies = [
     {
       name             = "makeitworkcloud-admins"
@@ -67,16 +57,6 @@ resource "cloudflare_zero_trust_access_application" "warp" {
       include = [{
         group = {
           id = cloudflare_zero_trust_access_group.admins.id
-        }
-      }]
-    },
-    {
-      name             = "steven@makeitwork.cloud"
-      decision         = "allow"
-      session_duration = "24h"
-      include = [{
-        email = {
-          email = "steven@makeitwork.cloud"
         }
       }]
     },
