@@ -3,8 +3,10 @@ data "sops_file" "secret_vars" {
 }
 
 locals {
-  account_id = data.sops_file.secret_vars.data["cloudflare_account_id"]
-  zone_id    = data.sops_file.secret_vars.data["cloudflare_zone_id"]
+  account_id                = data.sops_file.secret_vars.data["cloudflare_account_id"]
+  zone_id                   = data.sops_file.secret_vars.data["cloudflare_zone_id"]
+  github_warp_client_id     = data.sops_file.secret_vars.data["github_warp_client_id"]
+  github_warp_client_secret = data.sops_file.secret_vars.data["github_warp_client_secret"]
 }
 
 data "cloudflare_zone" "makeitwork_cloud" {
