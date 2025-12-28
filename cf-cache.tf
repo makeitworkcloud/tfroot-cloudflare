@@ -34,8 +34,8 @@ resource "cloudflare_zone_setting" "minify" {
   zone_id    = local.zone_id
   setting_id = "minify"
   value = {
-    css  = "on"
-    html = "on"
+    css  = "off"
+    html = "off"
     js   = "off"
   }
 }
