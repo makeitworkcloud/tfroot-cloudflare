@@ -10,6 +10,7 @@ locals {
 
   # Private networks (CIDR protected via SOPS)
   warp_private_network = data.sops_file.secret_vars.data["warp_private_network"]
+
 }
 
 data "cloudflare_zone" "makeitwork_cloud" {

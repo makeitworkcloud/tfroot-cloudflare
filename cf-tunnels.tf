@@ -1,68 +1,63 @@
 # Cloudflare Tunnels for OpenShift workloads
 # Tunnels connect cloudflared pods to Cloudflare edge network
 #
-# Tunnel credentials are managed separately in kustomize-cluster via SOPS/KSOPS.
+# The cluster-apps tunnel is managed by cloudflare-operator in OpenShift.
+# Tunnel credentials are managed in kustomize-cluster via SOPS/KSOPS.
+# DNS records are managed here to point to the consolidated tunnel.
 
 # =============================================================================
-# HTTP Tunnels (ingress-based)
+# Consolidated HTTP Tunnel (managed by cloudflare-operator)
 # =============================================================================
 
-# ArgoCD tunnel
-resource "cloudflare_zero_trust_tunnel_cloudflared" "argocd" {
+# Consolidated tunnel for all HTTP workloads
+# Lifecycle managed by cloudflare-operator ClusterTunnel resource in OpenShift
+# Import: tofu import cloudflare_zero_trust_tunnel_cloudflared.cluster_apps 03f750691b4ad4d59aa4b7205adaa108/1ac3a39c-7d97-422e-88e5-1f82b6334bbb
+resource "cloudflare_zero_trust_tunnel_cloudflared" "cluster_apps" {
   account_id = local.account_id
-  name       = "argocd"
+  name       = "cluster-apps"
+
+  lifecycle {
+    # Tunnel is managed by cloudflare-operator, prevent Terraform from modifying/deleting
+    ignore_changes = all
+  }
 }
+
+# =============================================================================
+# DNS Records (pointing to consolidated tunnel)
+# =============================================================================
 
 resource "cloudflare_dns_record" "argocd_tunnel" {
   zone_id = local.zone_id
   type    = "CNAME"
   name    = "argocd"
-  content = "${cloudflare_zero_trust_tunnel_cloudflared.argocd.id}.cfargotunnel.com"
+  content = "${cloudflare_zero_trust_tunnel_cloudflared.cluster_apps.id}.cfargotunnel.com"
   proxied = true
   ttl     = 1
-}
-
-# Grafana tunnel
-resource "cloudflare_zero_trust_tunnel_cloudflared" "grafana" {
-  account_id = local.account_id
-  name       = "grafana"
 }
 
 resource "cloudflare_dns_record" "grafana_tunnel" {
   zone_id = local.zone_id
   type    = "CNAME"
   name    = "grafana"
-  content = "${cloudflare_zero_trust_tunnel_cloudflared.grafana.id}.cfargotunnel.com"
+  content = "${cloudflare_zero_trust_tunnel_cloudflared.cluster_apps.id}.cfargotunnel.com"
   proxied = true
   ttl     = 1
-}
-
-# Uptime Kuma tunnel (status.makeitwork.cloud)
-resource "cloudflare_zero_trust_tunnel_cloudflared" "uptime_kuma" {
-  account_id = local.account_id
-  name       = "uptime-kuma"
 }
 
 resource "cloudflare_dns_record" "status_tunnel" {
   zone_id = local.zone_id
   type    = "CNAME"
   name    = "status"
-  content = "${cloudflare_zero_trust_tunnel_cloudflared.uptime_kuma.id}.cfargotunnel.com"
+  content = "${cloudflare_zero_trust_tunnel_cloudflared.cluster_apps.id}.cfargotunnel.com"
   proxied = true
   ttl     = 1
-}
-
-# AWX tunnel (ansible.makeitwork.cloud)
-resource "cloudflare_zero_trust_tunnel_cloudflared" "awx" {
-  account_id = local.account_id
-  name       = "awx"
 }
 
 resource "cloudflare_dns_record" "ansible_tunnel" {
   zone_id = local.zone_id
   type    = "CNAME"
   name    = "ansible"
-  content = "${cloudflare_zero_trust_tunnel_cloudflared.awx.id}.cfargotunnel.com"
+  content = "${cloudflare_zero_trust_tunnel_cloudflared.cluster_apps.id}.cfargotunnel.com"
   proxied = true
   ttl     = 1
 }
