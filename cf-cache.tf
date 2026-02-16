@@ -21,7 +21,7 @@ resource "cloudflare_zone_setting" "browser_cache_ttl" {
 resource "cloudflare_zone_setting" "browser_check" {
   zone_id    = local.zone_id
   setting_id = "browser_check"
-  value      = "on"
+  value      = "off"
 }
 
 resource "cloudflare_zone_setting" "challenge_ttl" {
