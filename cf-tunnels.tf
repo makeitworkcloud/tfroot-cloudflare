@@ -58,7 +58,7 @@ resource "cloudflare_dns_record" "ansible_tunnel" {
   type    = "CNAME"
   name    = "ansible"
   content = "${cloudflare_zero_trust_tunnel_cloudflared.cluster_apps.id}.cfargotunnel.com"
-  proxied = true
+  proxied = false
   ttl     = 1
 }
 
