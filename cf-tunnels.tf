@@ -3,7 +3,7 @@
 #
 # The cluster-apps tunnel is managed by cloudflare-operator in OpenShift.
 # Tunnel credentials are managed in kustomize-cluster via SOPS/KSOPS.
-# DNS records are managed here to point to the consolidated tunnel.
+# DNS records for app endpoints are managed by TunnelBinding resources in cluster.
 
 # =============================================================================
 # Consolidated HTTP Tunnel (managed by cloudflare-operator)
@@ -20,46 +20,6 @@ resource "cloudflare_zero_trust_tunnel_cloudflared" "cluster_apps" {
     # Tunnel is managed by cloudflare-operator, prevent Terraform from modifying/deleting
     ignore_changes = all
   }
-}
-
-# =============================================================================
-# DNS Records (pointing to consolidated tunnel)
-# =============================================================================
-
-resource "cloudflare_dns_record" "argocd_tunnel" {
-  zone_id = local.zone_id
-  type    = "CNAME"
-  name    = "argocd"
-  content = "${cloudflare_zero_trust_tunnel_cloudflared.cluster_apps.id}.cfargotunnel.com"
-  proxied = true
-  ttl     = 1
-}
-
-resource "cloudflare_dns_record" "grafana_tunnel" {
-  zone_id = local.zone_id
-  type    = "CNAME"
-  name    = "grafana"
-  content = "${cloudflare_zero_trust_tunnel_cloudflared.cluster_apps.id}.cfargotunnel.com"
-  proxied = true
-  ttl     = 1
-}
-
-resource "cloudflare_dns_record" "status_tunnel" {
-  zone_id = local.zone_id
-  type    = "CNAME"
-  name    = "status"
-  content = "${cloudflare_zero_trust_tunnel_cloudflared.cluster_apps.id}.cfargotunnel.com"
-  proxied = true
-  ttl     = 1
-}
-
-resource "cloudflare_dns_record" "ansible_tunnel" {
-  zone_id = local.zone_id
-  type    = "CNAME"
-  name    = "ansible"
-  content = "${cloudflare_zero_trust_tunnel_cloudflared.cluster_apps.id}.cfargotunnel.com"
-  proxied = true
-  ttl     = 1
 }
 
 # =============================================================================
