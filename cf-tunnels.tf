@@ -21,8 +21,9 @@ locals {
   cluster_apps_hostnames = [
     "argocd",
     "grafana",
+    "headlamp",
+    "k3s",
     "status",
-    "ansible",
   ]
 }
 
