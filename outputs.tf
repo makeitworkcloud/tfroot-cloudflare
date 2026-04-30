@@ -5,7 +5,6 @@
 output "tunnel_ids" {
   description = "Cloudflare Tunnel IDs for reference in kustomize-cluster ConfigMaps"
   value = {
-    cluster_apps = cloudflare_zero_trust_tunnel_cloudflared.cluster_apps.id
-    warp         = cloudflare_zero_trust_tunnel_cloudflared.warp.id
+    warp = cloudflare_zero_trust_tunnel_cloudflared.warp.id
   }
 }
