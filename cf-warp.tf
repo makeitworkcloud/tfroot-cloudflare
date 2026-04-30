@@ -6,7 +6,10 @@ resource "cloudflare_zero_trust_organization" "main" {
   name        = "makeitworkcloud.cloudflareaccess.com"
   auth_domain = "makeitworkcloud.cloudflareaccess.com"
 
-  allow_authenticate_via_warp = false
+  # WARP-enrolled devices get a valid Access session automatically, so
+  # protected hostnames (e.g. k3s.makeitwork.cloud) work without the OIDC
+  # browser flow. Off-WARP devices still authenticate normally.
+  allow_authenticate_via_warp = true
   is_ui_read_only             = false
 }
 
