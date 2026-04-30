@@ -20,6 +20,7 @@ data "cloudflare_zero_trust_tunnel_cloudflared" "cluster_apps" {
 locals {
   cluster_apps_hostnames = [
     "argocd",
+    "forgejo",
     "grafana",
     "headlamp",
     "k3s",
