@@ -1,30 +1,9 @@
-# Cloudflare Tunnels for OpenShift workloads
-# Tunnels connect cloudflared pods to Cloudflare edge network
+# Cloudflare Tunnels — connect cloudflared pods to Cloudflare's edge.
 #
-# The cluster-apps tunnel is managed by cloudflare-operator in OpenShift.
-# Tunnel credentials are managed in kustomize-cluster via SOPS/KSOPS.
-# DNS records for app endpoints are managed by TunnelBinding resources in cluster.
-
-# =============================================================================
-# Consolidated HTTP Tunnel (managed by cloudflare-operator)
-# =============================================================================
-
-# Consolidated tunnel for all HTTP workloads
-# Lifecycle managed by cloudflare-operator ClusterTunnel resource in OpenShift
-# Import: tofu import cloudflare_zero_trust_tunnel_cloudflared.cluster_apps 03f750691b4ad4d59aa4b7205adaa108/1ac3a39c-7d97-422e-88e5-1f82b6334bbb
-resource "cloudflare_zero_trust_tunnel_cloudflared" "cluster_apps" {
-  account_id = local.account_id
-  name       = "cluster-apps"
-
-  lifecycle {
-    # Tunnel is managed by cloudflare-operator, prevent Terraform from modifying/deleting
-    ignore_changes = all
-  }
-}
-
-# =============================================================================
-# WARP Connector (IP routing for Zero Trust VPN)
-# =============================================================================
+# The cluster-apps tunnel is created and owned by cloudflare-operator
+# (see kustomize-cluster/operators/cloudflare/cluster-tunnel.yaml). Tunnel
+# credentials live in the cluster's Secret. DNS records for app endpoints
+# are reconciled by TunnelBinding resources, not managed here.
 
 resource "cloudflare_zero_trust_tunnel_cloudflared" "warp" {
   account_id = local.account_id
