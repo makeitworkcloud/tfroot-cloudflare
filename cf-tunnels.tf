@@ -23,6 +23,7 @@ locals {
     "forgejo",
     "grafana",
     "headlamp",
+    "hero",
     "k3s",
     "status",
   ]
