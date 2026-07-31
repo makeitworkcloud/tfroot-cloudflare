@@ -1,0 +1,14 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Generated OpenTofu working data is ignored and never committed"
+paths = ['''(^|/)\.terraform(?:/.*)?$''']
+
+[[allowlists]]
+description = "Cloudflare service token IDs are public identifiers, not credentials"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "line"
+regexes = ['''token_id\s*=\s*"[0-9a-f-]{36}"''']
+paths = ['''^cf-warp\.tf$''']
