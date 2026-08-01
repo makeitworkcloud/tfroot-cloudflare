@@ -61,3 +61,28 @@ No inputs.
 | ---- | ----------- |
 | <a name="output_tunnel_ids"></a> [tunnel\_ids](#output\_tunnel\_ids) | Cloudflare Tunnel IDs for reference in kustomize-cluster ConfigMaps |
 <!-- END_TF_DOCS -->
+
+## Kubernetes API access
+
+This root manages the Cloudflare side of kubectl connectivity:
+
+- `cf-warp.tf` defines the GitHub identity provider and
+  `makeitworkcloud:admins` Access group.
+- `cf-access-k3s.tf` applies that group to `k3s.makeitwork.cloud`.
+- `cf-tunnels.tf` keeps the `k3s` CNAME pointed at the operator-owned
+  `cluster-apps-k3s` tunnel.
+
+The separate `kustomize-cluster/workloads/kubectl-tunnel` desired state owns
+the in-cluster route from that tunnel to the Kubernetes API Service.
+
+Cloudflare Access authenticates the network connection; Kubernetes still
+requires a Dex-issued kubectl OIDC token. The canonical kubeconfig and
+`cloudflared`/`kubelogin` procedure lives in the
+[`kustomize-cluster` README](https://github.com/makeitworkcloud/kustomize-cluster#kubectl-access).
+Do not store kubeconfigs, Access tokens, client certificates, or Cloudflare
+credentials in this repository.
+
+The CNAME and the `TunnelBinding` are coordinated control points. When
+retiring a hostname, reconcile the binding first so cloudflare-operator clears
+its `_managed.<fqdn>` TXT record, then remove the hostname here and review the
+OpenTofu plan before apply.

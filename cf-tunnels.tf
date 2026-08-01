@@ -22,7 +22,6 @@ locals {
     "argocd",
     "forgejo",
     "grafana",
-    "headlamp",
     "k3s",
     "status",
   ]
