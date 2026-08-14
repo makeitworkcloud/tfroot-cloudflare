@@ -17,6 +17,7 @@ data "cloudflare_zero_trust_tunnel_cloudflared" "cluster_apps" {
 # Cloudflare's edge which tunnel to route requests through.
 locals {
   cluster_apps_hostnames = [
+    "api",
     "argocd",
     "forgejo",
     "grafana",

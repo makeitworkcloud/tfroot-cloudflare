@@ -68,16 +68,18 @@ This root manages the Cloudflare side of kubectl connectivity:
 
 - `cf-warp.tf` defines the GitHub identity provider and
   `makeitworkcloud:admins` Access group.
-- `cf-access-k3s.tf` applies that group to `k3s.makeitwork.cloud`.
-- `cf-tunnels.tf` keeps the `k3s` CNAME pointed at the operator-owned
-  `cluster-apps-k3s` tunnel.
+- `cf-access-k3s.tf` applies that group to the migration fallback at
+  `k3s.makeitwork.cloud`.
+- `cf-tunnels.tf` keeps the `api` and `k3s` CNAMEs pointed at the
+  operator-owned `cluster-apps-k3s` tunnel.
 
 The separate `kustomize-cluster/workloads/kubectl-tunnel` desired state owns
 the in-cluster route from that tunnel to the Kubernetes API Service.
 
-Cloudflare Access authenticates the network connection; Kubernetes still
-requires a Dex-issued kubectl OIDC token. The canonical kubeconfig and
-`cloudflared`/`kubelogin` procedure lives in the
+Normal kubectl access connects directly to `https://api.makeitwork.cloud` and
+relies on a Dex-issued OIDC token plus Kubernetes RBAC. Cloudflare Access still
+protects the legacy TCP route at `k3s.makeitwork.cloud` during migration. The
+canonical kubeconfig and `kubelogin` procedure lives in the
 [`kustomize-cluster` README](https://github.com/makeitworkcloud/kustomize-cluster#kubectl-access).
 Do not store kubeconfigs, Access tokens, client certificates, or Cloudflare
 credentials in this repository.
