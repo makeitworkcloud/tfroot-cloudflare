@@ -1,6 +1,3 @@
-# Zero Trust / WARP configuration
-
-# Organization settings
 resource "cloudflare_zero_trust_organization" "main" {
   account_id  = local.account_id
   name        = "makeitworkcloud.cloudflareaccess.com"
@@ -13,7 +10,6 @@ resource "cloudflare_zero_trust_organization" "main" {
   is_ui_read_only             = false
 }
 
-# GitHub identity provider for WARP enrollment
 resource "cloudflare_zero_trust_access_identity_provider" "github" {
   account_id = local.account_id
   name       = "GitHub"
@@ -25,7 +21,6 @@ resource "cloudflare_zero_trust_access_identity_provider" "github" {
   }
 }
 
-# Access group for makeitworkcloud admins
 resource "cloudflare_zero_trust_access_group" "admins" {
   account_id = local.account_id
   name       = "makeitworkcloud-admins"
@@ -39,19 +34,16 @@ resource "cloudflare_zero_trust_access_group" "admins" {
   }]
 }
 
-# WARP enrollment application
 resource "cloudflare_zero_trust_access_application" "warp" {
   account_id       = local.account_id
   name             = "Warp Login App"
   type             = "warp"
   session_duration = "24h"
 
-  # Only GitHub SSO allowed for WARP enrollment
   allowed_idps = [
     cloudflare_zero_trust_access_identity_provider.github.id,
   ]
 
-  # Policies managed by Terraform
   policies = [
     {
       name             = "makeitworkcloud-admins"

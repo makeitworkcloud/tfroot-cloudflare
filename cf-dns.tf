@@ -42,7 +42,6 @@ resource "cloudflare_dns_record" "spf" {
   ttl     = 1
 }
 
-# Onion hidden service static site
 resource "cloudflare_dns_record" "onion" {
   zone_id = local.zone_id
   type    = "CNAME"

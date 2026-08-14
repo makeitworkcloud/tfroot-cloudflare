@@ -1,5 +1,3 @@
-# Cloudflare Access application protecting the k3s API server tunnel.
-#
 # Pairs with the TunnelBinding in kustomize-cluster (workloads/kubectl-tunnel)
 # that fronts kubernetes.default.svc:443 over k3s.makeitwork.cloud as a TCP
 # tunnel. Clients reach the apiserver via:

@@ -51,3 +51,17 @@ Cloudflare provider 5.20 and later supports `dns_search_suffixes` on Zero Trust
 device profiles. Local Domain Fallback is different: it selects which resolver
 handles matching domains and does not configure the operating system's DNS
 search suffix list.
+
+## Importing Zone Settings
+
+Cloudflare zone-setting import IDs use `<zone-id>/<setting-id>`. Obtain the
+zone ID through the approved local secret workflow, then import each managed
+setting explicitly, for example:
+
+```bash
+tofu import cloudflare_zone_setting.cache_level "$ZONE_ID/cache_level"
+tofu import cloudflare_zone_setting.browser_cache_ttl "$ZONE_ID/browser_cache_ttl"
+tofu import cloudflare_zone_setting.browser_check "$ZONE_ID/browser_check"
+tofu import cloudflare_zone_setting.challenge_ttl "$ZONE_ID/challenge_ttl"
+tofu import cloudflare_zone_setting.minify "$ZONE_ID/minify"
+```
