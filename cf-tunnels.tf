@@ -1,5 +1,3 @@
-# Cloudflare Tunnels — connect cloudflared pods to Cloudflare's edge.
-#
 # The cluster-apps tunnel is created and owned by cloudflare-operator
 # (see kustomize-cluster/operators/cloudflare/cluster-tunnel.yaml). Tunnel
 # credentials live in the cluster's Secret. CNAME records for the apps
