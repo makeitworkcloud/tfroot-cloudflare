@@ -23,6 +23,7 @@ locals {
     "grafana",
     "k3s",
     "status",
+    "alertmanager",
   ]
 }
 
