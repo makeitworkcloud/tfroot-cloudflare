@@ -22,6 +22,7 @@ locals {
     "forgejo",
     "grafana",
     "k3s",
+    "mcp",
     "opencode",
     "status",
     "alertmanager",
