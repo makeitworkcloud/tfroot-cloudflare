@@ -43,15 +43,16 @@ resource "cloudflare_zero_trust_access_application" "mcp_gateway" {
   ]
 }
 
-# Per-backend MCP endpoints (<name>.mcp.makeitwork.cloud) terminate on the
-# same toolhive proxyrunners behind the same tunnel. Wildcard application so
-# each integration gets its own FQDN without a new Access app per backend;
-# same service-token + admins policies as the aggregate gateway above.
-resource "cloudflare_zero_trust_access_application" "mcp_gateway_backends" {
+# Per-backend MCP endpoints (mcp-<name>.makeitwork.cloud) terminate on the
+# same toolhive proxyrunners behind the same tunnel. One application per FQDN:
+# Access domains cannot wildcard a name prefix, and first-level names are
+# required anyway because Universal SSL only covers one subdomain level.
+resource "cloudflare_zero_trust_access_application" "mcp_gateway_backend" {
+  for_each         = toset(local.mcp_backends)
   account_id       = local.account_id
-  name             = "MCP Gateway Backends"
+  name             = "MCP ${each.key}"
   type             = "self_hosted"
-  domain           = "*.mcp.makeitwork.cloud"
+  domain           = "mcp-${each.key}.makeitwork.cloud"
   session_duration = "24h"
 
   allowed_idps = [
