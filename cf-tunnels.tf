@@ -23,6 +23,17 @@ locals {
     "grafana",
     "k3s",
     "mcp",
+    # Per-backend MCP endpoints (toolhive proxyrunners); the aggregate
+    # VirtualMCPServer stays at the bare "mcp" hostname above.
+    "apify.mcp",
+    "argocd-makeitwork.mcp",
+    "aws-docs.mcp",
+    "context7.mcp",
+    "github.mcp",
+    "grafana-makeitwork.mcp",
+    "kubernetes.mcp",
+    "parallel-search.mcp",
+    "terraform-docs.mcp",
     "opencode",
     "status",
     "alertmanager",
