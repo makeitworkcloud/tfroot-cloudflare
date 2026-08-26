@@ -16,28 +16,35 @@ data "cloudflare_zero_trust_tunnel_cloudflared" "cluster_apps" {
 # kustomize-cluster picks up traffic for each FQDN; this CNAME just tells
 # Cloudflare's edge which tunnel to route requests through.
 locals {
-  cluster_apps_hostnames = [
-    "api",
-    "argocd",
-    "forgejo",
-    "grafana",
-    "k3s",
-    "mcp",
-    # Per-backend MCP endpoints (toolhive proxyrunners); the aggregate
-    # VirtualMCPServer stays at the bare "mcp" hostname above.
-    "apify.mcp",
-    "argocd-makeitwork.mcp",
-    "aws-docs.mcp",
-    "context7.mcp",
-    "github.mcp",
-    "grafana-makeitwork.mcp",
-    "kubernetes.mcp",
-    "parallel-search.mcp",
-    "terraform-docs.mcp",
-    "opencode",
-    "status",
-    "alertmanager",
+  # Per-backend MCP endpoints (toolhive proxyrunners); the aggregate
+  # VirtualMCPServer stays at the bare "mcp" hostname. First-level names are
+  # required: Cloudflare Universal SSL only covers *.makeitwork.cloud, so
+  # <name>.mcp.makeitwork.cloud cannot present a certificate.
+  mcp_backends = [
+    "apify",
+    "argocd-makeitwork",
+    "aws-docs",
+    "context7",
+    "github",
+    "grafana-makeitwork",
+    "kubernetes",
+    "parallel-search",
+    "terraform-docs",
   ]
+  cluster_apps_hostnames = concat(
+    [
+      "api",
+      "argocd",
+      "forgejo",
+      "grafana",
+      "k3s",
+      "mcp",
+      "opencode",
+      "status",
+      "alertmanager",
+    ],
+    [for backend in local.mcp_backends : "mcp-${backend}"],
+  )
 }
 
 resource "cloudflare_dns_record" "cluster_apps" {
