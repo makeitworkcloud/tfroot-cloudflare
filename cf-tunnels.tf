@@ -21,15 +21,16 @@ locals {
   # required: Cloudflare Universal SSL only covers *.makeitwork.cloud, so
   # <name>.mcp.makeitwork.cloud cannot present a certificate.
   mcp_backends = [
-    "apify",
-    "argocd-makeitwork",
-    "aws-docs",
-    "context7",
-    "github",
-    "grafana-makeitwork",
-    "kubernetes",
-    "parallel-search",
-    "terraform-docs",
+    "makeitwork-apify",
+    "makeitwork-argocd",
+    "makeitwork-aws-docs",
+    "makeitwork-context7",
+    "makeitwork-github",
+    "makeitwork-github-xnoto",
+    "makeitwork-grafana",
+    "makeitwork-kubernetes",
+    "makeitwork-parallel-search",
+    "makeitwork-terraform-docs",
   ]
   cluster_apps_hostnames = concat(
     [
