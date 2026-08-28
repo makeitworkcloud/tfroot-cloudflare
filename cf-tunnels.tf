@@ -1,62 +1,6 @@
-# The cluster-apps tunnel is created and owned by cloudflare-operator
-# (see kustomize-cluster/operators/cloudflare/cluster-tunnel.yaml). Tunnel
-# credentials live in the cluster's Secret. CNAME records for the apps
-# fronted by that tunnel are managed below.
-
-# Look up the cluster-apps tunnel by name so DNS records can target it
-# without hard-coding a UUID that changes if the operator recreates it.
-data "cloudflare_zero_trust_tunnel_cloudflared" "cluster_apps" {
-  account_id = local.account_id
-  filter = {
-    name = "cluster-apps-k3s"
-  }
-}
-
-# Hostnames fronted by the cluster-apps tunnel. The TunnelBinding in
-# kustomize-cluster picks up traffic for each FQDN; this CNAME just tells
-# Cloudflare's edge which tunnel to route requests through.
-locals {
-  # Per-backend MCP endpoints (toolhive proxyrunners); the aggregate
-  # VirtualMCPServer stays at the bare "mcp" hostname. First-level names are
-  # required: Cloudflare Universal SSL only covers *.makeitwork.cloud, so
-  # <name>.mcp.makeitwork.cloud cannot present a certificate.
-  mcp_backends = [
-    "makeitwork-apify",
-    "makeitwork-argocd",
-    "makeitwork-aws-docs",
-    "makeitwork-context7",
-    "makeitwork-github",
-    "makeitwork-github-xnoto",
-    "makeitwork-grafana",
-    "makeitwork-kubernetes",
-    "makeitwork-parallel-search",
-    "makeitwork-terraform-docs",
-  ]
-  cluster_apps_hostnames = concat(
-    [
-      "api",
-      "argocd",
-      "forgejo",
-      "grafana",
-      "k3s",
-      "mcp",
-      "opencode",
-      "status",
-      "alertmanager",
-    ],
-    [for backend in local.mcp_backends : "mcp-${backend}"],
-  )
-}
-
-resource "cloudflare_dns_record" "cluster_apps" {
-  for_each = toset(local.cluster_apps_hostnames)
-  zone_id  = local.zone_id
-  type     = "CNAME"
-  name     = each.value
-  content  = "${data.cloudflare_zero_trust_tunnel_cloudflared.cluster_apps.id}.cfargotunnel.com"
-  proxied  = true
-  ttl      = 1
-}
+# cloudflare-operator owns the cluster-apps tunnel and all tunnel-host CNAME
+# records through ClusterTunnel and TunnelBinding resources in
+# kustomize-cluster. This root retains only non-tunnel Cloudflare resources.
 
 resource "cloudflare_zero_trust_tunnel_cloudflared" "warp" {
   account_id = local.account_id
