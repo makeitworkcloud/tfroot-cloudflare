@@ -37,17 +37,17 @@ tracked copy.
 
 **"manifest unknown" error:** The `tfroot-runner:latest` image doesn't exist in GHCR. Check if the `images` repo Build workflow succeeded.
 
-**TunnelBinding DNS errors:** `cloudflare-operator` exclusively owns DNS for
-hostnames served through `ClusterTunnel` resources. An `unmanaged FQDN present`
-error means another system owns the CNAME. Do not import or recreate that
-record in this root; resolve ownership through the corresponding
-`TunnelBinding` in `kustomize-cluster`.
+**TunnelBinding DNS errors:** This root owns the bootstrap `api` and `k3s`
+CNAMEs. Their `TunnelBinding` must set `tunnelRef.disableDNSUpdates: true` so
+cloudflare-operator configures routes without managing DNS. Workload hostnames
+are owned by their `TunnelBinding` in `kustomize-cluster`; do not add them
+here.
 
 ## Related Repositories
 
 - `images` - Contains tfroot-runner image and canonical pre-commit config
 - `shared-workflows` - Contains the reusable OpenTofu workflow
-- `kustomize-cluster` - Owns Cloudflare Tunnel routes and their DNS CNAMEs
+- `kustomize-cluster` - Owns Cloudflare Tunnel routes and workload DNS CNAMEs
 
 ## DNS Search Suffixes
 

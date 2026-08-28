@@ -23,6 +23,7 @@ No modules.
 
 | Name | Type |
 | ---- | ---- |
+| [cloudflare_dns_record.cluster_bootstrap](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/dns_record) | resource |
 | [cloudflare_dns_record.mx_primary](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/dns_record) | resource |
 | [cloudflare_dns_record.mx_secondary](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/dns_record) | resource |
 | [cloudflare_dns_record.onion](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/dns_record) | resource |
@@ -51,6 +52,7 @@ No modules.
 | [cloudflare_zone_setting.minify](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/zone_setting) | resource |
 | [cloudflare_zone_setting.polish](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/zone_setting) | resource |
 | [cloudflare_zone_setting.rocket_loader](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/zone_setting) | resource |
+| [cloudflare_zero_trust_tunnel_cloudflared.cluster_apps](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/data-sources/zero_trust_tunnel_cloudflared) | data source |
 | [cloudflare_zone.makeitwork_cloud](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/data-sources/zone) | data source |
 | [sops_file.secret_vars](https://registry.terraform.io/providers/carlpett/sops/latest/docs/data-sources/file) | data source |
 
@@ -75,9 +77,10 @@ This root manages the Cloudflare side of kubectl connectivity:
   `makeitworkcloud:admins` Access group.
 - `cf-access-k3s.tf` applies that group to the migration fallback at
   `k3s.makeitwork.cloud`.
+- `cf-tunnels.tf` owns the `api` and `k3s` CNAMEs.
 - The `ClusterTunnel` and `TunnelBinding` manifests in
-  `kustomize-cluster/workloads/kubectl-tunnel` own the `api` and `k3s` CNAMEs
-  and their routes.
+  `kustomize-cluster/workloads/kubectl-tunnel` own their routes with DNS
+  updates disabled.
 
 Normal kubectl access connects directly to `https://api.makeitwork.cloud` and
 relies on a Dex-issued OIDC token plus Kubernetes RBAC. Cloudflare Access still
@@ -87,7 +90,7 @@ canonical kubeconfig and `kubelogin` procedure lives in the
 Do not store kubeconfigs, Access tokens, client certificates, or Cloudflare
 credentials in this repository.
 
-Tunnel-host DNS is exclusively owned by cloudflare-operator. A `TunnelBinding`
-creates and reconciles the proxied CNAME and its `_managed.<fqdn>` ownership TXT
-record; deleting the binding removes both. Do not add tunnel-host CNAMEs to
-this OpenTofu root.
+This root owns only the bootstrap tunnel DNS required to reach the Kubernetes
+API before cluster workloads are available. `TunnelBinding` owns workload
+tunnel DNS, including the MCP gateway endpoints. Do not add a workload hostname
+to this OpenTofu root.
