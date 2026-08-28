@@ -1,12 +1,19 @@
-# The cluster-apps tunnel is created by cloudflare-operator. This root owns the
-# two bootstrap DNS records that provide access to the Kubernetes API before
-# cluster workloads can reconcile. Workload tunnel DNS is managed by the
-# corresponding TunnelBinding in kustomize-cluster.
-data "cloudflare_zero_trust_tunnel_cloudflared" "cluster_apps" {
+# The cluster-apps tunnel has a durable lifecycle outside Kubernetes so a
+# replacement cluster can reconnect to the same tunnel ID. cloudflare-operator
+# owns its local ingress configuration and workload DNS through TunnelBindings.
+resource "cloudflare_zero_trust_tunnel_cloudflared" "cluster_apps" {
   account_id = local.account_id
-  filter = {
-    name = "cluster-apps-k3s"
+  name       = "cluster-apps-k3s"
+  config_src = "local"
+
+  lifecycle {
+    prevent_destroy = true
   }
+}
+
+import {
+  to = cloudflare_zero_trust_tunnel_cloudflared.cluster_apps
+  id = "03f750691b4ad4d59aa4b7205adaa108/d17bee03-8687-46a7-831b-df48aacdea1e"
 }
 
 locals {
@@ -18,7 +25,7 @@ resource "cloudflare_dns_record" "cluster_bootstrap" {
   zone_id  = local.zone_id
   type     = "CNAME"
   name     = each.value
-  content  = "${data.cloudflare_zero_trust_tunnel_cloudflared.cluster_apps.id}.cfargotunnel.com"
+  content  = "${cloudflare_zero_trust_tunnel_cloudflared.cluster_apps.id}.cfargotunnel.com"
   proxied  = true
   ttl      = 1
 }
