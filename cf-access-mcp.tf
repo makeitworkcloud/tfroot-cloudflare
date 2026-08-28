@@ -47,6 +47,24 @@ resource "cloudflare_zero_trust_access_application" "mcp_gateway" {
 # same toolhive proxyrunners behind the same tunnel. One application per FQDN:
 # Access domains cannot wildcard a name prefix, and first-level names are
 # required anyway because Universal SSL only covers one subdomain level.
+#
+# This list controls Access applications only. Tunnel DNS is exclusively owned
+# by TunnelBinding resources in kustomize-cluster.
+locals {
+  mcp_backends = [
+    "makeitwork-apify",
+    "makeitwork-argocd",
+    "makeitwork-aws-docs",
+    "makeitwork-context7",
+    "makeitwork-github",
+    "makeitwork-github-xnoto",
+    "makeitwork-grafana",
+    "makeitwork-kubernetes",
+    "makeitwork-parallel-search",
+    "makeitwork-terraform-docs",
+  ]
+}
+
 resource "cloudflare_zero_trust_access_application" "mcp_gateway_backend" {
   for_each         = toset(local.mcp_backends)
   account_id       = local.account_id
