@@ -41,6 +41,7 @@ No modules.
 | [cloudflare_zero_trust_access_application.warp](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/zero_trust_access_application) | resource |
 | [cloudflare_zero_trust_access_group.admins](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/zero_trust_access_group) | resource |
 | [cloudflare_zero_trust_access_identity_provider.github](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/zero_trust_access_identity_provider) | resource |
+| [cloudflare_zero_trust_access_service_token.hero_host_config_warp](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/zero_trust_access_service_token) | resource |
 | [cloudflare_zero_trust_access_service_token.mcp_gateway](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/zero_trust_access_service_token) | resource |
 | [cloudflare_zero_trust_organization.main](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/zero_trust_organization) | resource |
 | [cloudflare_zero_trust_tunnel_cloudflared.cluster_apps](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/zero_trust_tunnel_cloudflared) | resource |
@@ -68,6 +69,8 @@ No inputs.
 
 | Name | Description |
 | ---- | ----------- |
+| <a name="output_hero_host_config_warp_service_token_client_id"></a> [hero\_host\_config\_warp\_service\_token\_client\_id](#output\_hero\_host\_config\_warp\_service\_token\_client\_id) | Cloudflare Access service-token client ID for hero-host-config WARP enrollment |
+| <a name="output_hero_host_config_warp_service_token_client_secret"></a> [hero\_host\_config\_warp\_service\_token\_client\_secret](#output\_hero\_host\_config\_warp\_service\_token\_client\_secret) | Cloudflare Access service-token client secret for hero-host-config WARP enrollment |
 | <a name="output_mcp_gateway_service_token_client_id"></a> [mcp\_gateway\_service\_token\_client\_id](#output\_mcp\_gateway\_service\_token\_client\_id) | CF-Access-Client-Id for MCP gateway clients |
 | <a name="output_mcp_gateway_service_token_client_secret"></a> [mcp\_gateway\_service\_token\_client\_secret](#output\_mcp\_gateway\_service\_token\_client\_secret) | CF-Access-Client-Secret for MCP gateway clients |
 | <a name="output_tunnel_ids"></a> [tunnel\_ids](#output\_tunnel\_ids) | Cloudflare Tunnel IDs for reference in kustomize-cluster ConfigMaps |
