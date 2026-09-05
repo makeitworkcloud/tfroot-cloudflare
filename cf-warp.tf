@@ -34,6 +34,15 @@ resource "cloudflare_zero_trust_access_group" "admins" {
   }]
 }
 
+# Dedicated token for GitHub-hosted hero-host-config deployments. It is kept
+# separate from the existing generic GitHub Actions token so its recipient,
+# lifecycle, and eventual rotation are independently governed.
+resource "cloudflare_zero_trust_access_service_token" "hero_host_config_warp" {
+  account_id = local.account_id
+  name       = "hero-host-config-warp"
+  duration   = "8760h"
+}
+
 resource "cloudflare_zero_trust_access_application" "warp" {
   account_id       = local.account_id
   name             = "Warp Login App"
@@ -62,6 +71,16 @@ resource "cloudflare_zero_trust_access_application" "warp" {
       include = [{
         service_token = {
           token_id = "635d3164-6e89-4b4b-9812-112b77fdd797"
+        }
+      }]
+    },
+    {
+      name             = "hero-host-config GitHub Actions"
+      decision         = "non_identity"
+      session_duration = "24h"
+      include = [{
+        service_token = {
+          token_id = cloudflare_zero_trust_access_service_token.hero_host_config_warp.id
         }
       }]
     }
