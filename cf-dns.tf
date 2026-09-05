@@ -50,3 +50,23 @@ resource "cloudflare_dns_record" "onion" {
   proxied = true
   ttl     = 1
 }
+
+# xnoto.dev is a separate Cloudflare zone with a public S3 website origin.
+# These records do not alter makeitwork.cloud mail, tunnel, or workload DNS.
+resource "cloudflare_dns_record" "xnoto_dev_root" {
+  zone_id = cloudflare_zone.xnoto_dev.id
+  type    = "CNAME"
+  name    = "@"
+  content = "xnoto.dev.s3-website.us-west-2.amazonaws.com"
+  proxied = true
+  ttl     = 1
+}
+
+resource "cloudflare_dns_record" "xnoto_dev_www" {
+  zone_id = cloudflare_zone.xnoto_dev.id
+  type    = "CNAME"
+  name    = "www"
+  content = "xnoto.dev.s3-website.us-west-2.amazonaws.com"
+  proxied = true
+  ttl     = 1
+}
