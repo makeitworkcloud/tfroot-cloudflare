@@ -57,6 +57,7 @@ locals {
     "makeitwork-aws-docs",
     "makeitwork-cloudflare",
     "makeitwork-context7",
+    "makeitwork-gcp",
     "makeitwork-github",
     "makeitwork-github-xnoto",
     "makeitwork-grafana",
