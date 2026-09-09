@@ -55,6 +55,7 @@ locals {
     "makeitwork-apify",
     "makeitwork-argocd",
     "makeitwork-aws-docs",
+    "makeitwork-cloudflare",
     "makeitwork-context7",
     "makeitwork-github",
     "makeitwork-github-xnoto",
