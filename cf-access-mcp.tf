@@ -43,26 +43,31 @@ resource "cloudflare_zero_trust_access_application" "mcp_gateway" {
   ]
 }
 
-# Per-backend MCP endpoints (mcp-<name>.makeitwork.cloud) terminate on the
-# same toolhive proxyrunners behind the same tunnel. One application per FQDN:
-# Access domains cannot wildcard a name prefix, and first-level names are
-# required anyway because Universal SSL only covers one subdomain level.
+# Individual ToolHive backend endpoints use one first-level hostname each so
+# Universal SSL covers them. Cloudflare Access applications are explicit per
+# hostname because Access does not wildcard a name prefix. The shared service
+# token is an owner-approved solo-developer trust boundary; the cluster keeps
+# backend credentials and generated proxy Services internal.
 #
-# This list controls Access applications only. Tunnel DNS is exclusively owned
-# by TunnelBinding resources in kustomize-cluster.
+# Tunnel DNS and routes remain exclusively owned by the corresponding
+# TunnelBinding subjects in kustomize-cluster. Keep the aggregate application
+# until all external clients have migrated to direct endpoints.
 locals {
   mcp_backends = [
-    "makeitwork-apify",
-    "makeitwork-argocd",
-    "makeitwork-aws-docs",
-    "makeitwork-cloudflare",
-    "makeitwork-context7",
-    "makeitwork-github",
-    "makeitwork-github-xnoto",
-    "makeitwork-grafana",
-    "makeitwork-kubernetes",
-    "makeitwork-parallel-search",
-    "makeitwork-terraform-docs",
+    "apify",
+    "argocd",
+    "aws",
+    "aws-docs",
+    "cloudflare",
+    "context7",
+    "gcp",
+    "grafana",
+    "kubernetes",
+    "parallel-search",
+    "playwright",
+    "slidespeak",
+    "terraform-docs",
+    "twilio-docs",
   ]
 }
 
