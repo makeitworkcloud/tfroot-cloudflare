@@ -75,13 +75,13 @@ resource "cloudflare_zero_trust_access_application" "mcp_gateway_backend" {
     {
       name     = "mcp-gateway-clients"
       decision = "non_identity"
-      include = [{service_token = {token_id = cloudflare_zero_trust_access_service_token.mcp_gateway.id}}]
+      include  = [{ service_token = { token_id = cloudflare_zero_trust_access_service_token.mcp_gateway.id } }]
     },
     {
       name             = "makeitworkcloud-admins"
       decision         = "allow"
       session_duration = "24h"
-      include = [{group = {id = cloudflare_zero_trust_access_group.admins.id}}]
+      include          = [{ group = { id = cloudflare_zero_trust_access_group.admins.id } }]
     }
   ]
 }
