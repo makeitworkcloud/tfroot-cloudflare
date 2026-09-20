@@ -57,7 +57,7 @@ locals {
   mcp_backends = [
     "apify", "argocd", "aws", "aws-docs", "cloudflare", "context7", "gcp",
     "grafana", "kubernetes", "parallel-search", "playwright", "slidespeak",
-    "terraform-docs", "twilio-docs",
+    "terraform-docs",
   ]
 }
 
