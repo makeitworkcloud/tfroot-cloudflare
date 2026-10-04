@@ -1,26 +1,25 @@
-data "cloudflare_rulesets" "opencode_hsts_preflight" {
-  zone_id   = local.zone_id
-  max_items = 1000
+resource "cloudflare_ruleset" "response_headers" {
+  zone_id     = local.zone_id
+  name        = "Response header transforms"
+  description = "Hostname-scoped response security headers"
+  kind        = "zone"
+  phase       = "http_response_headers_transform"
 
-  lifecycle {
-    postcondition {
-      condition     = length(self.rulesets) < 1000
-      error_message = "Ruleset discovery reached its limit; stop and review the complete inventory before adding HSTS."
+  rules = [
+    {
+      ref    = "opencode_hsts"
+      action = "rewrite"
+      action_parameters = {
+        headers = {
+          "strict-transport-security" = {
+            operation = "set"
+            value     = "max-age=86400"
+          }
+        }
+      }
+      expression  = "(http.host eq \"opencode.makeitwork.cloud\" and http.request.scheme eq \"https\")"
+      description = "One-day HSTS for the OpenCode HTTPS hostname only"
+      enabled     = true
     }
-    postcondition {
-      condition = length([
-        for ruleset in self.rulesets : ruleset.id
-        if ruleset.kind == "zone" && ruleset.phase == "http_response_headers_transform"
-      ]) == 0
-      error_message = "An existing response-header ruleset requires ownership review before adding OpenCode HSTS."
-    }
-  }
-}
-
-output "opencode_hsts_existing_response_header_rulesets" {
-  description = "Preflight count of existing zone response-header rulesets; must be zero before HSTS creation."
-  value = length([
-    for ruleset in data.cloudflare_rulesets.opencode_hsts_preflight.rulesets : ruleset.id
-    if ruleset.kind == "zone" && ruleset.phase == "http_response_headers_transform"
-  ])
+  ]
 }

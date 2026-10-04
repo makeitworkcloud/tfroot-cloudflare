@@ -103,3 +103,27 @@ This root owns only the bootstrap tunnel DNS required to reach the Kubernetes
 API before cluster workloads are available. `TunnelBinding` owns workload
 tunnel DNS, including the MCP gateway endpoints. Do not add a workload hostname
 to this OpenTofu root.
+
+## OpenCode HSTS
+
+`cf-opencode-hsts.tf` configures the zone response-header ruleset with a rule
+matching only HTTPS requests to `opencode.makeitwork.cloud`. It sets
+`Strict-Transport-Security: max-age=86400` (one day), without
+`includeSubDomains` or `preload`. Native OpenCode authentication and existing
+HTTPS redirection are unchanged. No Cloudflare Access, workload DNS/tunnel,
+or AWX cleanup is included.
+
+This root owns the response-header entrypoint. Review and preserve its full
+rule list before adding other header rules; do not create a competing
+entrypoint or adopt an existing one without reviewing its rules. PR CI plans
+validate the proposed changes; `main` runs a fresh environment-associated
+apply, not the saved PR plan. Merge and apply authorization are separate.
+
+After approved apply, verify the HTTPS UI and unauthenticated API responses
+carry the header, native phone login and session continuity still work, and
+sibling hostnames are unaffected. A successful plan is not live verification.
+
+For rollback, first serve `max-age=0` over HTTPS through this rule, then remove
+it after the rollback has been reviewed and applied. Simply removing the
+header does not clear browser policies; they otherwise expire up to one day
+after their last receipt. Preserve HTTPS throughout.
