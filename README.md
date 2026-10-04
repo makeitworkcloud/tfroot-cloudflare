@@ -58,6 +58,7 @@ No modules.
 | [cloudflare_zone_setting.polish](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/zone_setting) | resource |
 | [cloudflare_zone_setting.rocket_loader](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/zone_setting) | resource |
 | [cloudflare_zone_setting.xnoto_dev_ssl](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/zone_setting) | resource |
+| [cloudflare_rulesets.opencode_hsts_preflight](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/data-sources/rulesets) | data source |
 | [cloudflare_zone.makeitwork_cloud](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/data-sources/zone) | data source |
 | [sops_file.secret_vars](https://registry.terraform.io/providers/carlpett/sops/latest/docs/data-sources/file) | data source |
 
@@ -73,6 +74,7 @@ No inputs.
 | <a name="output_hero_host_config_warp_service_token_client_secret"></a> [hero\_host\_config\_warp\_service\_token\_client\_secret](#output\_hero\_host\_config\_warp\_service\_token\_client\_secret) | Cloudflare Access service-token client secret for hero-host-config WARP enrollment |
 | <a name="output_mcp_gateway_service_token_client_id"></a> [mcp\_gateway\_service\_token\_client\_id](#output\_mcp\_gateway\_service\_token\_client\_id) | CF-Access-Client-Id for MCP gateway clients |
 | <a name="output_mcp_gateway_service_token_client_secret"></a> [mcp\_gateway\_service\_token\_client\_secret](#output\_mcp\_gateway\_service\_token\_client\_secret) | CF-Access-Client-Secret for MCP gateway clients |
+| <a name="output_opencode_hsts_existing_response_header_rulesets"></a> [opencode\_hsts\_existing\_response\_header\_rulesets](#output\_opencode\_hsts\_existing\_response\_header\_rulesets) | Preflight count of existing zone response-header rulesets; must be zero before HSTS creation. |
 | <a name="output_tunnel_ids"></a> [tunnel\_ids](#output\_tunnel\_ids) | Cloudflare Tunnel IDs for reference in kustomize-cluster ConfigMaps |
 <!-- END_TF_DOCS -->
 
