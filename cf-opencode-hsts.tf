@@ -17,7 +17,7 @@ resource "cloudflare_ruleset" "response_headers" {
           }
         }
       }
-      expression  = "(http.host eq \"opencode.makeitwork.cloud\" and http.request.scheme eq \"https\")"
+      expression  = "(http.host eq \"opencode.makeitwork.cloud\" and ssl)"
       description = "One-day HSTS for the OpenCode HTTPS hostname only"
       enabled     = true
     }
